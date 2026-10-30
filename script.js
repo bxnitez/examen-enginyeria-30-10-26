@@ -40,12 +40,12 @@ async function cargarLista(n) {
     mensaje.textContent = "Cargando lista de piratas...";
     actualizarBotones(false);
  
-        const respuesta = await fetch(`${API_URL}?page=${n}&limit=${POR_PAGINA}`);
+        const respuesta = await fetch(`${API_URL}?page=${n}&limit=${PAGINA_MAximo}`);
         if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
         const data = await respuesta.json();
         if (miPeticion !== idPeticion) return;   
         const piratas = Array.isArray(data) ? data : data.characters;
-        if (!Array.isArray(piratas)) throw new Error("Respuesta inesperada");
+        
  
         mensaje.textContent = piratas.length ? "" : "No hay más piratas.";
  
@@ -74,17 +74,17 @@ async function cargarLista(n) {
             btnVer.textContent = "Ver";
             btnVer.addEventListener("click", () => mostrar(p.id));
  
-            const btnAnadir = document.createElement("button");
-            btnAnadir.className = "btnAfegir";
-            btnAnadir.textContent = "Añadir";
-            btnAnadir.addEventListener("click", () => afegirCapturados(p));
+            const btnAñadir = document.createElement("button");
+            btnAñadir.className = "btnAfegir";
+            btnAñadir.textContent = "Añadir";
+            btnAñadir.addEventListener("click", () => afegirCapturados(p));
  
-            card.append(img, pNombre, pRecompensa, btnVer, btnAnadir);
+            card.append(img, pNombre, pRecompensa, btnVer, btnAñadir);
             lista.appendChild(card);
         });
  
         cargando = false;
-        actualizarBotones(piratas.length === POR_PAGINA);
+        actualizarBotones(piratas.length === PAGINA_MAximo);
     
 }
  
@@ -119,7 +119,7 @@ async function mostrar(nom) {
     const msg = document.getElementById("mensaje");
     const detall = document.getElementById("detalle");
 
-    const p = await getPokemon(nom);
+    const p = await getPirata(nom);
 
     if (!p) {
         msg.textContent = "No s'ha trobat cap personatge";
@@ -131,6 +131,27 @@ async function mostrar(nom) {
     mostrar(nom);
 });
 
+async function mostrar(id) {
+    const data = await getPirata(id);
+    if (!data) {
+        detalle.textContent = "No se pudo cargar el pirata.";
+        return;
+    }
+    const p = data.character || data;
+    const nombre = nombrePirata(p);
+    const epiteto = p.extra_data && p.extra_data.epithet ? p.extra_data.epithet : "—";
+ 
+    detalle.innerHTML = `
+        <h2></h2>
+        ${p.image_url ? `<img class="foto" src="${p.image_url}" alt="">` : ""}
+        <p>Recompensa: ${textoRecompensa(p)}</p>
+        <p>Estado: ${p.status || "—"}</p>
+        <p>Edad: ${p.age ?? "—"}</p>
+        <p>Alias: ${epiteto}</p>`;
+    detalle.querySelector("h2").textContent = nombre;
+    const im = detalle.querySelector("img");
+    if (im) im.alt = nombre;
+}
 cargarLista();
 
 
