@@ -1,28 +1,59 @@
-* { box-sizing: border-box; }
-body { font-family: sans-serif; margin: 0; padding: 1rem; }
-img { max-width: 100%; }
+/* Esto evita que las cosas se salgan de la pantalla */
+* {
+  box-sizing: border-box;
+}
 
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 10px;
+}
+
+/* Las imágenes nunca más anchas que su caja (importante en móvil) */
+img {
+  max-width: 100%;
+}
+
+/* El buscador: caja y botón en la misma fila */
+.buscador {
+  display: flex;
+  gap: 5px;
+}
+.buscador input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px;
+}
+
+/* El equipo se queda pegado arriba al bajar con el ratón = siempre visible */
+#equipo {
+  position: sticky;
+  top: 0;
+  background: white;
+  border: 2px solid red;
+  min-height: 60px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 5px;
+}
+
+/* La lista: tarjetas en cuadrícula. Se adapta sola al ancho de la pantalla */
 #lista {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 5px;
 }
-body{color: #4f4db1; background-color: #f9f9f9;}
-.card {
+
+/* Cada tarjeta */
+.tarjeta {
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: .5rem;
+  padding: 5px;
   text-align: center;
+  cursor: pointer;
+  background: white;
 }
-
-#detalle { text-align: center; margin-bottom: 1rem; }
-#detalle img { max-width: 250px; }
-
-#lista, #capturados {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 1rem;
+.tarjeta:hover {
+  background: #ffe0e0;
 }
-
-html{color: #2d1b1b; background-color: #2c85ae;}
-
