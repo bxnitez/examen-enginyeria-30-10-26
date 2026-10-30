@@ -1,40 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="examen-Bruno" content="examen-Bruno" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>One Piece</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
-   <h1>One Piece - Bruno B.</h1>
+  <header class="site-header">
+    <h1>One Piece - Bruno B</h1>
+    <form id="search-form" class="search-form" role="search">
+      <label for="search-input">Buscar por nombre</label>
+      <div class="search-row">
+        <input id="search-input" type="search" placeholder="Escribe un nombre" autocomplete="off">
+        <button type="submit">Buscar</button>
+      </div>
+    </form>
+  </header>
 
-  <!-- BUSCADOR: una caja para escribir y un botón -->
-  <div class="buscador">
-    <input id="caja" type="text" placeholder="Ex: Ideaman">
-    <button id="botonBuscar">Buscar</button>
-  </div>
-  <!-- los mensajes (cargando, no existe, error...) -->
-  <p id="mensaje"></p>
-    <!-- DETALLE: aquí sale el pirata que eliges -->
-  <h2>Detalle</h2>
-  <div id="detalle">Selecciona el pirata</div>
+  <p id="status" class="status" role="status" aria-live="polite" hidden></p>
 
-
-    <!-- Comptador de recompenses:  -->
-  <h2>Contador de recompensas</h2>
-  <div id="capturados"></div>
-  
-    <!--lista paginada de 10 personajes-->
-  <h2>Lista</h2>
-  <div id="lista"></div>
-  <div id="card"></div>
-
-
-    <button id="btnAnterior">Anterior</button>
-    
-    <button id="btnSiguiente">Siguiente</button>
-  <script src="script.js"></script>
+  <main class="layout">
+    <section class="panel panel-list">
+      <h2>Listado</h2>
+      <ul id="item-list" class="item-list"></ul>
+    </section>
+    <section class="panel panel-detail">
+      <h2>Detalle</h2>
+      <div id="item-detail"></div>
+    </section>
+    <aside class="panel panel-collection">
+      <h2>Colección <span id="collection-count" class="muted"></span></h2>
+      <ul id="collection-list" class="collection-list"></ul>
+    </aside>
+  </main>
 </body>
 </html>
