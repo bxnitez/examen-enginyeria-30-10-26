@@ -12,15 +12,15 @@ async function cargarLista(){
     mensaje.textContent = "Cargando lista de piratas...";
 
     try{
-        const respuesta = await fetch("https://onepieceapi.com/api/characters?limit=12");
-        const datos = await respuesta.json();
-
-        const piratas = datos.results;
+        const respuesta = await fetch("https://bn9ct5dd-3000.uks1.devtunnels.ms/");
+        const data = await respuesta.json();
         // Vaciamos la lista por si acaso
          lista.innerHTML = "";
-         for (let i = 0; i < piratas.length; i++) {
-      const nombre = piratas[i].name;
-      const id = i + 1; 
+        const piratas = data.characters;
+
+                data.characters.forEach(p => {
+               
+    }   
 
       
     }
