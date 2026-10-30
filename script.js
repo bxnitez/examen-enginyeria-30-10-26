@@ -18,40 +18,91 @@ let pagina = 1;
 let cargando = false;
 let idPeticion = 0;
 
-async function cargarLista(){
-    mensaje.textContent = "Cargando lista de piratas...";
 
-        const respuesta = await fetch("API_URL");
-        const data = await respuesta.json();
-        // Vaciamos la lista por si acaso
-         lista.innerHTML = "";
-        const piratas = data.characters;
-
-                piratas.forEach(p => { const card = document.createElement("div");
-                card.className = "card";
-                card.innerHTML = `
-                <p>${p.name}</p>
-                <button class="btnVeure">Veure</button>
-                <button class="btnAfegir">Afegir</button>`;
-                card.querySelector(".btnVeure").addEventListener("click", () => mostrar(p.name));
-                card.querySelector(".btnAfegir").addEventListener("click", () => afegirCapturados(p.name));
-                lista.appendChild(card);
-                });
-                
-                piratas.forEach(p => {
-                const card = document.createElement("div");
-                card.className = "card";
-                card.innerHTML = `<p>${p.name}</p>`;
-                lista.appendChild(card);
-                });
-
-                  }  
 
 async function getPirata(nom){
     const resp = await fetch(`http://localhost:3000/api/onepiece/characters/${nom}`);
     if (!resp.ok) return null;
     return await resp.json();
 }
+
+function nombrePirata(p) {
+    const n = p.name;
+    if (!n) return "Nombre desconocido";
+    if (typeof n === "string") return n;
+    return n.en || "Nombre desconocido";
+}
+async function cargarLista(n) {
+    const miPeticion = ++idPeticion;
+    pagina = n;
+    cargando = true;
+    lista.innerHTML = "";            
+    mensaje.textContent = "Cargando lista de piratas...";
+    actualizarBotones(false);
+ 
+        const respuesta = await fetch(`${API_URL}?page=${n}&limit=${POR_PAGINA}`);
+        if (!respuesta.ok) throw new Error("HTTP " + respuesta.status);
+        const data = await respuesta.json();
+        if (miPeticion !== idPeticion) return;   
+        const piratas = Array.isArray(data) ? data : data.characters;
+        if (!Array.isArray(piratas)) throw new Error("Respuesta inesperada");
+ 
+        mensaje.textContent = piratas.length ? "" : "No hay más piratas.";
+ 
+        piratas.forEach(p => {
+            const nombre = nombrePirata(p);
+            const card = document.createElement("div");
+            card.className = "card";
+ 
+            const img = document.createElement("img");
+            img.className = "foto";
+            img.alt = nombre;
+            img.loading = "lazy";
+            img.src = p.image_url || "";
+            if (!p.image_url) img.style.visibility = "hidden";
+ 
+            const pNombre = document.createElement("p");
+            pNombre.className = "nombre";
+            pNombre.textContent = nombre;
+ 
+            const pRecompensa = document.createElement("p");
+            pRecompensa.className = "recompensa";
+            pRecompensa.textContent = textoRecompensa(p);
+ 
+            const btnVer = document.createElement("button");
+            btnVer.className = "btnVeure";
+            btnVer.textContent = "Ver";
+            btnVer.addEventListener("click", () => mostrar(p.id));
+ 
+            const btnAnadir = document.createElement("button");
+            btnAnadir.className = "btnAfegir";
+            btnAnadir.textContent = "Añadir";
+            btnAnadir.addEventListener("click", () => afegirCapturados(p));
+ 
+            card.append(img, pNombre, pRecompensa, btnVer, btnAnadir);
+            lista.appendChild(card);
+        });
+ 
+        cargando = false;
+        actualizarBotones(piratas.length === POR_PAGINA);
+    
+}
+ 
+btnAnterior.addEventListener("click", () => {
+    if (pagina > 1 && !cargando) {
+        cargarLista(pagina - 1);
+        window.scrollTo({ top: 0 });
+    }
+});
+ 
+btnSiguiente.addEventListener("click", () => {
+    if (!cargando) {
+        cargarLista(pagina + 1);
+        window.scrollTo({ top: 0 });
+    }
+});
+ 
+
 
 async function mostrar(nom) {
   const p = await getPirata(nom);
